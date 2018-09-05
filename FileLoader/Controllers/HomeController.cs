@@ -9,12 +9,14 @@ using System.IO;
 using System.Data.Entity.Validation;
 using System.Web.Helpers;
 using System.Web.UI;
+using FileLoader.Models;
+using Microsoft.AspNet.Identity;
 
 namespace FileLoader.Controllers
 {
     public class HomeController : Controller
     {
-
+        ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
             return View();
@@ -23,12 +25,19 @@ namespace FileLoader.Controllers
         [HttpPost]
         public ActionResult Index(List<HttpPostedFileBase> files)
         {
-
+            var currentUser = db.Users.Find(User.Identity.GetUserId());
+            var region = db.Regions.Find(currentUser.RegionId);
+            var area = db.Areas.Find(currentUser.AreaId);
             var path = "";
             foreach (var item in files)
             {
                 if (item != null)
                 {
+                    if (item.ContentLength > 100000000)
+                    {
+                        ViewBag.SizeOverflow = true;
+                        return View();
+                    }
                     if (item.ContentLength > 0)
                     {
                         if (Path.GetExtension(item.FileName).ToLower() == ".rar"
@@ -37,16 +46,17 @@ namespace FileLoader.Controllers
                             || Path.GetExtension(item.FileName).ToLower() == ".xls"
                             || Path.GetExtension(item.FileName).ToLower() == ".xlsx")
                         {
-                            path = Path.Combine(Server.MapPath("~/files"), item.FileName);
+                            if (!Directory.Exists(Server.MapPath("~/files/" + region.Name + "/" + area.Name)))
+                            {
+                                Directory.CreateDirectory(Server.MapPath("~/files/" + region.Name + "/" + area.Name));
+                            }
+                            path = Path.Combine(Server.MapPath("~/files/" + region.Name + "/" + area.Name), item.FileName);
                             item.SaveAs(path);
                             ViewBag.UploadSuccess = true;
                         }
                         ViewBag.CorrectExtension = true;
                     }
-                    if (item.ContentLength > 100000000)
-                    {
-                        ViewBag.SizeOverflow = true;
-                    }
+
                 }
             }
             return View();
