@@ -14,7 +14,7 @@ namespace FileLoader.Controllers
 {
     public class HomeController : Controller
     {
-        
+
         public ActionResult Index()
         {
             return View();
@@ -23,35 +23,33 @@ namespace FileLoader.Controllers
         [HttpPost]
         public ActionResult Index(List<HttpPostedFileBase> files)
         {
-            try
+
+            var path = "";
+            foreach (var item in files)
             {
-                var path = "";
-                foreach (var item in files)
+                if (item != null)
                 {
-                    if (item != null)
+                    if (item.ContentLength > 0)
                     {
-                        if (item.ContentLength > 0)
+                        if (Path.GetExtension(item.FileName).ToLower() == ".rar"
+                            || Path.GetExtension(item.FileName).ToLower() == ".zip"
+                            || Path.GetExtension(item.FileName).ToLower() == ".docx"
+                            || Path.GetExtension(item.FileName).ToLower() == ".xls"
+                            || Path.GetExtension(item.FileName).ToLower() == ".xlsx")
                         {
-                            if (Path.GetExtension(item.FileName).ToLower() == ".rar"
-                                || Path.GetExtension(item.FileName).ToLower() == ".zip"
-                                || Path.GetExtension(item.FileName).ToLower() == ".docx"
-                                || Path.GetExtension(item.FileName).ToLower() == ".xls"
-                                || Path.GetExtension(item.FileName).ToLower() == ".xlsx")
-                            {
-                                path = Path.Combine(Server.MapPath("~/files"), item.FileName);
-                                item.SaveAs(path);
-                                ViewBag.UploadSuccess = true;
-                            }
+                            path = Path.Combine(Server.MapPath("~/files"), item.FileName);
+                            item.SaveAs(path);
+                            ViewBag.UploadSuccess = true;
                         }
+                        ViewBag.CorrectExtension = true;
+                    }
+                    if (item.ContentLength > 100000000)
+                    {
+                        ViewBag.SizeOverflow = true;
                     }
                 }
-                return View();
             }
-            catch (System.Web.HttpException)
-            {
-                return View();
-            }
-              
+            return View();
         }
 
         public ActionResult About()
