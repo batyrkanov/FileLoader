@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using FileLoader.Models;
+using System.Net;
+using X.PagedList;
 
 namespace FileLoader.Controllers
 {
@@ -17,7 +19,7 @@ namespace FileLoader.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        ApplicationDbContext context = new ApplicationDbContext();
         public AccountController()
         {
         }
@@ -51,6 +53,100 @@ namespace FileLoader.Controllers
                 _userManager = value;
             }
         }
+        public ActionResult UserList(int? page)
+        {
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            var user = UserManager.Users.OrderBy(x => x.UserName).ToPagedList(pageNumber, pageSize);
+            return View(user);
+        }
+
+        public ActionResult Details(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = UserManager.FindById(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            var area = context.Areas.Where(a=>a.Id == user.AreaId).SingleOrDefault();
+            var region = context.Regions.Where(x => x.Id == user.RegionId).SingleOrDefault();
+ 
+            ViewBag.Area = area.Name;
+            ViewBag.Region = region.Name;
+
+            return View(user);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Edit(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            ViewBag.Area = new SelectList(context.Areas, "Id", "Name", user.AreaId);
+            ViewBag.Region = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            if (user != null)
+            {
+                return View(user);
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(ApplicationUser model, string RoleId)
+        {
+            var user = await UserManager.FindByNameAsync(model.UserName);
+            ViewBag.Area = new SelectList(context.Areas, "Id", "Name", user.AreaId);
+            ViewBag.Region = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            
+            if (user != null)
+            {
+                IdentityResult result = await UserManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("UserList", "Account");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Что-то пошло не так");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Пользователь не найден");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Delete(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = UserManager.FindById(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            var user = UserManager.FindById(id);
+            UserManager.Delete(user);
+            return RedirectToAction("UserList");
+        }
+
+
 
         //
         // GET: /Account/Login
@@ -75,7 +171,7 @@ namespace FileLoader.Controllers
 
             // Сбои при входе не приводят к блокированию учетной записи
             // Чтобы ошибки при вводе пароля инициировали блокирование учетной записи, замените на shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -139,6 +235,8 @@ namespace FileLoader.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions, "Id", "Name");
             return View();
         }
 
@@ -151,7 +249,8 @@ namespace FileLoader.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var email = Guid.NewGuid().ToString() + "@mail.com";
+                var user = new ApplicationUser { Email = email, UserName = model.UserName, RegionId = model.RegionId, AreaId = model.AreaId };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -167,7 +266,8 @@ namespace FileLoader.Controllers
                 }
                 AddErrors(result);
             }
-
+            ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions, "Id", "Name");
             // Появление этого сообщения означает наличие ошибки; повторное отображение формы
             return View(model);
         }
