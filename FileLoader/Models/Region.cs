@@ -9,10 +9,12 @@ namespace FileLoader.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
         public ICollection<Area> Areas { get; set; }
 
         public Region()
         {
+            Users = new List<ApplicationUser>();
             Areas = new List<Area>();
         }
     }

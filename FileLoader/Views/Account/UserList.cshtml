@@ -14,13 +14,13 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Area.Name)
+            Область
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Region.Name)
+            Район
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            Логин
         </th>
         <th></th>
     </tr>
@@ -29,10 +29,11 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Area.Name)
+                @Html.DisplayFor(modelItem => item.Region.Name)
+                
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Region.Name)
+                @Html.DisplayFor(modelItem => item.Area.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)

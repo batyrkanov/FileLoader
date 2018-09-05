@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using FileLoader.Models;
 using System.Net;
 using X.PagedList;
+using System.Data.Entity;
 
 namespace FileLoader.Controllers
 {
@@ -57,7 +58,7 @@ namespace FileLoader.Controllers
         {
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-            var user = UserManager.Users.OrderBy(x => x.UserName).ToPagedList(pageNumber, pageSize);
+            var user = UserManager.Users.Include(a=>a.Area).Include(r=>r.Region).OrderBy(x => x.UserName).ToPagedList(pageNumber, pageSize);
             return View(user);
         }
 
