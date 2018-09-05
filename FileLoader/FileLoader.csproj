@@ -223,6 +223,10 @@
     <Compile Include="Migrations\201809050424514_Initial.Designer.cs">
       <DependentUpon>201809050424514_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201809051043396_Add_RegularExpression.cs" />
+    <Compile Include="Migrations\201809051043396_Add_RegularExpression.Designer.cs">
+      <DependentUpon>201809051043396_Add_RegularExpression.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Area.cs" />
@@ -359,6 +363,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201809050424514_Initial.resx">
       <DependentUpon>201809050424514_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809051043396_Add_RegularExpression.resx">
+      <DependentUpon>201809051043396_Add_RegularExpression.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

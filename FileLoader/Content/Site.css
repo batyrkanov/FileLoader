@@ -12,12 +12,15 @@
 .dl-horizontal dt {
     white-space: normal;
 }
+#btn-download {
+    margin-left: 2%;
+}
 
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 100%;
 }
 
 .nav-link {
