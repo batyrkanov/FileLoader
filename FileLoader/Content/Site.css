@@ -1,7 +1,4 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
+﻿@import url('https://fonts.googleapis.com/css?family=Roboto');
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
@@ -21,4 +18,23 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.nav-link {
+    color: #fff !important;
+    border-bottom: 1px solid #3b46ab;
+    transition: .2s;
+}
+.nav-link:hover{
+    border-bottom: 1px solid #ffffff;
+}
+
+.jumb {
+   margin-top: 10px;
+   background-color: rgba(59, 70, 171, .2);
+   border: 1px solid #3b46ab;
+}
+
+.login-form {
+    background-color: rgba(59, 70, 171, .2);
 }
