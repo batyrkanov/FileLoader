@@ -33,34 +33,50 @@
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.docx,.xls,.xlsx" />
+    <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
     <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" class="btn btn-default" />
     <input type="submit" value="Загрузить" class="btn btn-default" />
 }
-@if (ViewBag.UploadSuccess == true)
+@if (ViewBag.SizeOverflow == true)
 {
-    <span> Upload Completed successfully</span>
+    @section Scripts {
+        <script type="text/javascript" charset="utf-8">
+            SizeOverflow();
+        </script>
+    }
+}
+else if (ViewBag.UploadSuccess == true)
+{
+    @section Scripts {
+        <script type="text/javascript" charset="utf-8">
+            UploadSuccess();
+        </script>
+    }
 }
 
+else if (ViewBag.CorrectExtension == true)
+{
+    @section Scripts {
+        <script type="text/javascript" charset="utf-8">
+            CorrectExtension();
+        </script>
+    }
+}
 <!-- Modal window for image size 2MB-->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ошибка</h5>
-                </div>
-                <div class="modal-body">
-                    <span id="MessageError"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ошибка</h5>
+            </div>
+            <div class="modal-body">
+                <span id="MessageError"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
+</div>
+@Scripts.Render("~/Scripts/app.js")
 
-@section Scripts {
-    <script type="text/javascript" charset="utf-8">
-        checkPhotoPreview();
-    </script>
-}
