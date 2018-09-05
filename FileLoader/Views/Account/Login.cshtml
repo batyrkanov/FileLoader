@@ -2,50 +2,42 @@
 @model LoginViewModel
 @{
     ViewBag.Title = "Выполнить вход";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-    <div class="col-md-8">
-        <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <h4>Используйте локальную учетную запись для входа.</h4>
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <div class="checkbox">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Выполнить вход" class="btn btn-default" />
-                    </div>
-                </div>
-            }
-        </section>
-    </div>
-</div>
+    <title>Вход</title>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    <!-- Bootstrap core CSS -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link href="~/Content/loginstyle.css" rel="stylesheet" />
+</head>
+<body class="text-center">
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <img class="mb-4" src="http://www.stat.kg/static/images/logo.png" alt="" width="102" height="102">
+        <h1 class="h3 mb-3 font-weight-normal">Авторизируйтесь</h1>
+        <label for="inputEmail" class="sr-only">Логин</label>
+        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @id = "inputEmail", @required = "required", @autofocus = "autofocus", @placeholder = "Введите логин" })
+        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @id= "inputPassword", @placeholder = "Введите пароль", @required = "required" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        <div class="checkbox mb-3">
+            @Html.CheckBoxFor(m => m.RememberMe, new { @value="remember-me"})
+            @Html.LabelFor(m => m.RememberMe)
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+        <p class="mt-5 mb-3 text-muted">&copy; @DateTime.Now.Year</p>
+    }
+</body>
+</html>
