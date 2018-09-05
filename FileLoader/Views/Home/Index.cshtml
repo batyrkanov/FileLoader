@@ -33,7 +33,7 @@
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.docx,.xls,.xlsx" />
+    <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
     <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" class="btn btn-default" />
     <input type="submit" value="Загрузить" class="btn btn-default" />
 }

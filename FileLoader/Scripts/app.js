@@ -3,11 +3,11 @@
 }
 function CorrectExtension() {
     $('#myModal').modal('show');
-    $('#MessageError').text('Необходимо выбрать файл с расширением *.zip, *.rar, *.docx, *.xlsx');
+    $('#MessageError').text('Необходимо выбрать файл только с расширением *.zip, *.rar, *.doc, *.docx, *.xls, *.xlsx, *.arj');
 }
 function SizeOverflow() {
     $('#myModal').modal('show');
-    $('#MessageError').text('Общий размер загружаемых файлов не должен превышать 100 МБ, уменьшите размер и повторите загрузку файлов заного!');
+    $('#MessageError').text('Общий размер загружаемых файлов не должен превышать 100 МБ, уменьшите размер и повторите заново загрузку файлов!');
 }
 function UploadSuccess() {
     $('#myModal').modal('show');

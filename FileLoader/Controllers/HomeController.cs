@@ -42,9 +42,11 @@ namespace FileLoader.Controllers
                     {
                         if (Path.GetExtension(item.FileName).ToLower() == ".rar"
                             || Path.GetExtension(item.FileName).ToLower() == ".zip"
+                            || Path.GetExtension(item.FileName).ToLower() == ".doc"
                             || Path.GetExtension(item.FileName).ToLower() == ".docx"
                             || Path.GetExtension(item.FileName).ToLower() == ".xls"
-                            || Path.GetExtension(item.FileName).ToLower() == ".xlsx")
+                            || Path.GetExtension(item.FileName).ToLower() == ".xlsx"
+                            || Path.GetExtension(item.FileName).ToLower() == ".arj")
                         {
                             if (!Directory.Exists(Server.MapPath("~/files/" + region.Name + "/" + area.Name)))
                             {
