@@ -54,6 +54,7 @@ namespace FileLoader.Controllers
                 _userManager = value;
             }
         }
+        [Authorize(Roles = "admin")]
         public ActionResult UserList(int? page)
         {
             int pageSize = 10;
@@ -61,7 +62,7 @@ namespace FileLoader.Controllers
             var user = UserManager.Users.Include(a=>a.Area).Include(r=>r.Region).OrderBy(x => x.UserName).ToPagedList(pageNumber, pageSize);
             return View(user);
         }
-
+        [Authorize(Roles = "admin")]
         public ActionResult Details(string id)
         {
             if (id == null)
@@ -83,11 +84,12 @@ namespace FileLoader.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> Edit(string id)
         {
             var user = await UserManager.FindByIdAsync(id);
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name", user.AreaId);
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            ViewBag.AreaId = new SelectList(context.Areas, "Id", "Name", user.AreaId);
+            ViewBag.RegionId = new SelectList(context.Regions, "Id", "Name", user.RegionId);
             if (user != null)
             {
                 return View(user);
@@ -97,11 +99,12 @@ namespace FileLoader.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(ApplicationUser model, string RoleId)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> Edit(ApplicationUser model)
         {
             var user = await UserManager.FindByNameAsync(model.UserName);
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name", user.AreaId);
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            ViewBag.AreaId = new SelectList(context.Areas, "Id", "Name", user.AreaId);
+            ViewBag.RegionId = new SelectList(context.Regions, "Id", "Name", user.RegionId);
             
             if (user != null)
             {
@@ -122,7 +125,7 @@ namespace FileLoader.Controllers
 
             return View(model);
         }
-
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
             if (id == null)
@@ -139,6 +142,7 @@ namespace FileLoader.Controllers
 
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
@@ -233,7 +237,7 @@ namespace FileLoader.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
             ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
@@ -244,7 +248,7 @@ namespace FileLoader.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
@@ -255,7 +259,8 @@ namespace FileLoader.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    UserManager.AddToRole(user.Id, "manager");
+                   
                     
                     // Дополнительные сведения о включении подтверждения учетной записи и сброса пароля см. на странице https://go.microsoft.com/fwlink/?LinkID=320771.
                     // Отправка сообщения электронной почты с этой ссылкой
@@ -493,7 +498,7 @@ namespace FileLoader.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //

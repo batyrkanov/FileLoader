@@ -33,7 +33,7 @@
         @Html.PasswordFor(m => m.Password, new { @class = "form-control", @id= "inputPassword", @placeholder = "Введите пароль", @required = "required" })
         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         <div class="checkbox mb-3">
-            @Html.CheckBoxFor(m => m.RememberMe, new { @value="remember-me"})
+            @Html.CheckBoxFor(m => m.RememberMe)
             @Html.LabelFor(m => m.RememberMe)
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>

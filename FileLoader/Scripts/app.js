@@ -14,3 +14,25 @@ function UploadSuccess() {
     $('#exampleModalLabel').text('Выполнено');
     $('#MessageError').text('Файлы успешно загружены!');
 }
+
+function deleteAllFiles() {
+    var response = true;
+    
+    $.ajax({
+        url: "/Home/Contact",
+        type: "POST",
+        data: {
+            "response": response
+        },
+        cache: false,
+        success: function (result) {
+            $('#myModal').modal('show');
+            $('#exampleModalLabel').text('Выполнено');
+            $('#MessageError').text('Файлы успешно удалены!');
+        },
+        error: function (XMLHttpRequest) {
+            console.log(XMLHttpRequest);
+        }
+    });
+    return false;
+}
