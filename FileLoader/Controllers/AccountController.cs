@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using FileLoader.Models;
 using System.Net;
 using X.PagedList;
+using System.Data.Entity;
 
 namespace FileLoader.Controllers
 {
@@ -53,14 +54,21 @@ namespace FileLoader.Controllers
                 _userManager = value;
             }
         }
+        [Authorize(Roles = "admin")]
         public ActionResult UserList(int? page)
         {
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-            var user = UserManager.Users.OrderBy(x => x.UserName).ToPagedList(pageNumber, pageSize);
+            var user = UserManager.Users
+                .Include(a=>a.Area)
+                .Include(r=>r.Region)
+                .OrderBy(x => x.Region.Name)
+                .ThenBy(ar=>ar.Area.Name)
+                .ThenBy(userName=>userName.FullName)
+                .ToPagedList(pageNumber, pageSize);
             return View(user);
         }
-
+        [Authorize(Roles = "admin")]
         public ActionResult Details(string id)
         {
             if (id == null)
@@ -82,11 +90,12 @@ namespace FileLoader.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> Edit(string id)
         {
             var user = await UserManager.FindByIdAsync(id);
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name", user.AreaId);
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
+            ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
             if (user != null)
             {
                 return View(user);
@@ -96,14 +105,21 @@ namespace FileLoader.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(ApplicationUser model, string RoleId)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> Edit(ApplicationUser model)
         {
-            var user = await UserManager.FindByNameAsync(model.UserName);
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name", user.AreaId);
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            var user = await UserManager.FindByIdAsync(model.Id);
+            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x=>x.Name), "Id", "Name", user.AreaId);
+            ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
             
             if (user != null)
             {
+                user.FullName = model.FullName;
+                user.RegionId = model.RegionId;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.AreaId = model.AreaId; //custom property
                 IdentityResult result = await UserManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
@@ -121,7 +137,7 @@ namespace FileLoader.Controllers
 
             return View(model);
         }
-
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
             if (id == null)
@@ -138,6 +154,7 @@ namespace FileLoader.Controllers
 
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
@@ -232,29 +249,30 @@ namespace FileLoader.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name");
+            ViewBag.Area = new SelectList(context.Areas.OrderBy(x=>x.Name), "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions.OrderBy(x=>x.Name), "Id", "Name");
             return View();
         }
 
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var email = Guid.NewGuid().ToString() + "@mail.com";
-                var user = new ApplicationUser { Email = email, UserName = model.UserName, RegionId = model.RegionId, AreaId = model.AreaId };
+                var user = new ApplicationUser { Email = email, FullName = model.FullName, UserName = model.UserName, RegionId = model.RegionId, AreaId = model.AreaId };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    UserManager.AddToRole(user.Id, "manager");
+                   
                     
                     // Дополнительные сведения о включении подтверждения учетной записи и сброса пароля см. на странице https://go.microsoft.com/fwlink/?LinkID=320771.
                     // Отправка сообщения электронной почты с этой ссылкой
@@ -266,8 +284,8 @@ namespace FileLoader.Controllers
                 }
                 AddErrors(result);
             }
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name");
+            ViewBag.Area = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name");
             // Появление этого сообщения означает наличие ошибки; повторное отображение формы
             return View(model);
         }
@@ -492,7 +510,7 @@ namespace FileLoader.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         //

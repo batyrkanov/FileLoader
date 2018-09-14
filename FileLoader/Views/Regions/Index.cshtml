@@ -3,13 +3,17 @@
 @using X.PagedList.Mvc
 @using X.PagedList.Mvc.Bootstrap4
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Области";
 }
 
-<h2>Index</h2>
+<br />
+<h2>Области</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <a type="button" class="btn btn-primary" href="@Url.Action("Create", "Regions")">
+        <i class="fa fa-plus"></i>
+        Добавить область
+    </a>
 </p>
 <table class="table">
     <tr>
@@ -21,14 +25,43 @@
 
     @foreach (var item in Model)
     {
+        var myModal = "myModal" + item.Id;
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <div class="btn-group" role="group">
+                    <a class="btn btn-info" name="editButton" id="editButton" href="@Url.Action("Edit", "Regions", new { id = item.Id})"><i class="fa fa-pencil" aria-hidden="true" title="Редактировать" data-toggle="tooltip" data-placement="top"></i></a>
+                    <a class="btn btn-warning" name="detailsButton" id="detailsButton" href="@Url.Action("Details", "Regions", new { id = item.Id})"><i class="fa fa-eye" aria-hidden="true" title="Просмотреть" data-toggle="tooltip" data-placement="top"></i></a>
+                    <a a class="btn btn-danger" name="deleteButton" id="deleteButton" href="@Url.Action("Delete","Regions", new {id = item.Id})" data-toggle="modal" data-target="#@myModal"
+                       data-whatever="@item.Id"><i class="fa fa-trash" aria-hidden="true" title="Удалить" data-toggle="tooltip" data-placement="top"></i></a>
+                </div>
+                <!-- Confirmation modal -->
+                <div class="modal fade" id="@myModal" tabindex="-1" role="dialog" aria-labelledby="confirmdelete" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmdelete">Удаление</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Вы действительно хотите удалить: <span><b>@item.Name</b></span>
+                            </div>
+                            @using (Html.BeginForm("Delete", "Regions", FormMethod.Post, new { enctype = "multipart/form-data", @class = "delete-form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                    <input type="submit" value="Удалить" class="btn btn-danger" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
     }

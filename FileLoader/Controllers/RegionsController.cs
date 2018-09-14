@@ -11,6 +11,7 @@ using X.PagedList;
 
 namespace FileLoader.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class RegionsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

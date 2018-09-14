@@ -12,6 +12,10 @@ namespace FileLoader.Models
 
         public Guid? RegionId { get; set; }
         public Region Region { get; set; }
-
+        public ICollection<ApplicationUser> Users { get; set; }
+        public Area()
+        {
+            Users = new List<ApplicationUser>();
+        }
     }
 }

@@ -11,6 +11,7 @@ using X.PagedList;
 
 namespace FileLoader.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AreasController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -36,6 +37,8 @@ namespace FileLoader.Controllers
             {
                 return HttpNotFound();
             }
+            var region = db.Regions.Find(area.RegionId);
+            ViewBag.RegionName = region.Name;
             return View(area);
         }
 
