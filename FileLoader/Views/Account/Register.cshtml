@@ -24,6 +24,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="control-label col-md-2">ФИО</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
         <label class="control-label col-md-2">Логин</label>
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
@@ -41,12 +47,12 @@
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
         </div>
     </div>
-     <div class="form-group">
-            <div class="btn-group" role="group">
-                <button type="submit" class="btn btn-success"><i class="fa fa-save" aria-hidden="true" title="Зарегистировать" data-toggle="tooltip" data-placement="top"><span style="padding: 5px;">Зарегистировать</span></i></button>
-                <a href="@Url.Action("UserList", "Account")" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true" title="Назад" data-toggle="tooltip" data-placement="top"><span style="padding: 5px;">Назад</span></i></a>
-            </div>
+    <div class="form-group">
+        <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-success"><i class="fa fa-save" aria-hidden="true" title="Зарегистировать" data-toggle="tooltip" data-placement="top"><span style="padding: 5px;">Зарегистировать</span></i></button>
+            <a href="@Url.Action("UserList", "Account")" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true" title="Назад" data-toggle="tooltip" data-placement="top"><span style="padding: 5px;">Назад</span></i></a>
         </div>
+    </div>
 }
 
 @section Scripts {

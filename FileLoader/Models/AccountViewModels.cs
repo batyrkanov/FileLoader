@@ -73,6 +73,10 @@ namespace FileLoader.Models
         public Guid? AreaId { get; set; }
 
         [Required]
+        [Display(Name = "ФИО")]
+        public string FullName { get; set; }
+
+        [Required]
         [Display(Name = "Логин")]
         public string UserName { get; set; }
 

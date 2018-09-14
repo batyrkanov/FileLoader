@@ -59,7 +59,13 @@ namespace FileLoader.Controllers
         {
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-            var user = UserManager.Users.Include(a=>a.Area).Include(r=>r.Region).OrderBy(x => x.UserName).ToPagedList(pageNumber, pageSize);
+            var user = UserManager.Users
+                .Include(a=>a.Area)
+                .Include(r=>r.Region)
+                .OrderBy(x => x.Region.Name)
+                .ThenBy(ar=>ar.Area.Name)
+                .ThenBy(userName=>userName.FullName)
+                .ToPagedList(pageNumber, pageSize);
             return View(user);
         }
         [Authorize(Roles = "admin")]
@@ -88,8 +94,8 @@ namespace FileLoader.Controllers
         public async Task<ActionResult> Edit(string id)
         {
             var user = await UserManager.FindByIdAsync(id);
-            ViewBag.AreaId = new SelectList(context.Areas, "Id", "Name", user.AreaId);
-            ViewBag.RegionId = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
+            ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
             if (user != null)
             {
                 return View(user);
@@ -102,12 +108,18 @@ namespace FileLoader.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Edit(ApplicationUser model)
         {
-            var user = await UserManager.FindByNameAsync(model.UserName);
-            ViewBag.AreaId = new SelectList(context.Areas, "Id", "Name", user.AreaId);
-            ViewBag.RegionId = new SelectList(context.Regions, "Id", "Name", user.RegionId);
+            var user = await UserManager.FindByIdAsync(model.Id);
+            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x=>x.Name), "Id", "Name", user.AreaId);
+            ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
             
             if (user != null)
             {
+                user.FullName = model.FullName;
+                user.RegionId = model.RegionId;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.AreaId = model.AreaId; //custom property
                 IdentityResult result = await UserManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
@@ -240,8 +252,8 @@ namespace FileLoader.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name");
+            ViewBag.Area = new SelectList(context.Areas.OrderBy(x=>x.Name), "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions.OrderBy(x=>x.Name), "Id", "Name");
             return View();
         }
 
@@ -255,7 +267,7 @@ namespace FileLoader.Controllers
             if (ModelState.IsValid)
             {
                 var email = Guid.NewGuid().ToString() + "@mail.com";
-                var user = new ApplicationUser { Email = email, UserName = model.UserName, RegionId = model.RegionId, AreaId = model.AreaId };
+                var user = new ApplicationUser { Email = email, FullName = model.FullName, UserName = model.UserName, RegionId = model.RegionId, AreaId = model.AreaId };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -272,8 +284,8 @@ namespace FileLoader.Controllers
                 }
                 AddErrors(result);
             }
-            ViewBag.Area = new SelectList(context.Areas, "Id", "Name");
-            ViewBag.Region = new SelectList(context.Regions, "Id", "Name");
+            ViewBag.Area = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name");
             // Появление этого сообщения означает наличие ошибки; повторное отображение формы
             return View(model);
         }

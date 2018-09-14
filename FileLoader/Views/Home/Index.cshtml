@@ -17,7 +17,7 @@
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
-    <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" class="btn btn-danger" />
+    <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" style="margin-left: 10%" class="btn btn-danger" />
     <input type="submit" value="Загрузить" id="btn-download" class="btn btn-success" />
 }
 @if (ViewBag.SizeOverflow == true)
