@@ -25,7 +25,7 @@ namespace FileLoader.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -37,9 +37,9 @@ namespace FileLoader.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -60,11 +60,11 @@ namespace FileLoader.Controllers
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             var user = UserManager.Users
-                .Include(a=>a.Area)
-                .Include(r=>r.Region)
+                .Include(a => a.Area)
+                .Include(r => r.Region)
                 .OrderBy(x => x.Region.Name)
-                .ThenBy(ar=>ar.Area.Name)
-                .ThenBy(userName=>userName.FullName)
+                .ThenBy(ar => ar.Area.Name)
+                .ThenBy(userName => userName.FullName)
                 .ToPagedList(pageNumber, pageSize);
             return View(user);
         }
@@ -80,9 +80,9 @@ namespace FileLoader.Controllers
             {
                 return HttpNotFound();
             }
-            var area = context.Areas.Where(a=>a.Id == user.AreaId).SingleOrDefault();
+            var area = context.Areas.Where(a => a.Id == user.AreaId).SingleOrDefault();
             var region = context.Regions.Where(x => x.Id == user.RegionId).SingleOrDefault();
- 
+
             ViewBag.Area = area.Name;
             ViewBag.Region = region.Name;
 
@@ -93,14 +93,18 @@ namespace FileLoader.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Edit(string id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             var user = await UserManager.FindByIdAsync(id);
-            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
-            ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
             if (user != null)
             {
+                ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
+                ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
+
                 return View(user);
             }
-
             return RedirectToAction("Login", "Account");
         }
 
@@ -109,9 +113,9 @@ namespace FileLoader.Controllers
         public async Task<ActionResult> Edit(ApplicationUser model)
         {
             var user = await UserManager.FindByIdAsync(model.Id);
-            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x=>x.Name), "Id", "Name", user.AreaId);
+            ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
             ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
-            
+
             if (user != null)
             {
                 user.FullName = model.FullName;
@@ -233,7 +237,7 @@ namespace FileLoader.Controllers
             // Если пользователь введет неправильные коды за указанное время, его учетная запись 
             // будет заблокирована на заданный период. 
             // Параметры блокирования учетных записей можно настроить в IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -252,8 +256,8 @@ namespace FileLoader.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Register()
         {
-            ViewBag.Area = new SelectList(context.Areas.OrderBy(x=>x.Name), "Id", "Name");
-            ViewBag.Region = new SelectList(context.Regions.OrderBy(x=>x.Name), "Id", "Name");
+            ViewBag.Area = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name");
+            ViewBag.Region = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name");
             return View();
         }
 
@@ -272,8 +276,8 @@ namespace FileLoader.Controllers
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(user.Id, "manager");
-                   
-                    
+
+
                     // Дополнительные сведения о включении подтверждения учетной записи и сброса пароля см. на странице https://go.microsoft.com/fwlink/?LinkID=320771.
                     // Отправка сообщения электронной почты с этой ссылкой
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

@@ -38,6 +38,5 @@ namespace FileLoader.Models
         {
             return new ApplicationDbContext();
         }
-        
     }
 }

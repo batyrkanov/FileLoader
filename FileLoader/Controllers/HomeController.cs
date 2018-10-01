@@ -34,6 +34,11 @@ namespace FileLoader.Controllers
             var path = "";
             foreach (var item in files)
             {
+                if (item == null)
+                {
+                    ViewBag.NoFile = true;
+                    return View();
+                }
                 contentLength += item.ContentLength;
                 if (contentLength > 100000000)
                 {
@@ -44,7 +49,7 @@ namespace FileLoader.Controllers
             foreach (var item in files)
             {
                 if (item != null)
-                {                
+                {
                     if (item.ContentLength > 3000)
                     {
                         if (Path.GetExtension(item.FileName).ToLower() == ".rar"
@@ -76,6 +81,7 @@ namespace FileLoader.Controllers
             }
             return View();
         }
+
         [HttpGet]
         [Authorize(Roles = "admin")]
         public ActionResult About()
@@ -120,23 +126,24 @@ namespace FileLoader.Controllers
                         }
                         ViewBag.CorrectExtension = true;
                     }
-
                 }
             }
             return View();
         }
 
         [HttpGet]
+        public JsonResult CountFiles()
+        {
+            System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(Server.MapPath("~/files/"));
+            int count = dir.GetFiles().Length;
+            //JsonResponse jr = new JsonResponse();
+            //jr.SetSuccess(true).SetResult(count);
+            return Json(new { result = count }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public ActionResult Contact()
         {
-            string path = Server.MapPath("~/files");
-            string zipPath = Server.MapPath("~/Extract/base.zip");
-            if (System.IO.File.Exists(zipPath))
-            {
-                System.IO.File.Delete(zipPath);
-            }
-            ZipFile.CreateFromDirectory(path, zipPath, CompressionLevel.Fastest, true);
-            Contact(true);
             return View();
         }
 
@@ -144,11 +151,17 @@ namespace FileLoader.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Contact(bool response)
         {
-            if (response)
+            System.IO.DirectoryInfo path = new System.IO.DirectoryInfo(Server.MapPath("~/files/"));
+            if (path.GetFiles().Length != 0 && response)
             {
-                string path = Server.MapPath("~/files");
-                System.IO.DirectoryInfo di = new DirectoryInfo(path);
+                string zipPath = Server.MapPath("~/Extract/base.zip");
+                if (System.IO.File.Exists(zipPath))
+                {
+                    System.IO.File.Delete(zipPath);
+                }
+                ZipFile.CreateFromDirectory(path.ToString(), zipPath, CompressionLevel.Fastest, true);
 
+                System.IO.DirectoryInfo di = new DirectoryInfo(path.ToString());
                 foreach (FileInfo file in di.GetFiles())
                 {
                     file.Delete();
@@ -157,10 +170,9 @@ namespace FileLoader.Controllers
                 {
                     dir.Delete(true);
                 }
+                return View();
             }
             return View();
         }
-
-        
     }
 }

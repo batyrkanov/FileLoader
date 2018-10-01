@@ -20,7 +20,15 @@
     <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" style="margin-left: 10%" class="btn btn-danger" />
     <input type="submit" value="Загрузить" id="btn-download" class="btn btn-success" />
 }
-@if (ViewBag.SizeOverflow == true)
+@if (ViewBag.NoFile == true)
+{
+    @section Scripts {
+        <script type="text/javascript" charset="utf-8">
+            NoFile();
+        </script>
+    }
+}
+else if (ViewBag.SizeOverflow == true)
 {
     @section Scripts {
         <script type="text/javascript" charset="utf-8">
