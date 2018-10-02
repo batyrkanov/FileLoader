@@ -102,7 +102,6 @@ namespace FileLoader.Controllers
             {
                 ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
                 ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
-
                 return View(user);
             }
             return RedirectToAction("Login", "Account");
@@ -115,7 +114,6 @@ namespace FileLoader.Controllers
             var user = await UserManager.FindByIdAsync(model.Id);
             ViewBag.AreaId = new SelectList(context.Areas.OrderBy(x => x.Name), "Id", "Name", user.AreaId);
             ViewBag.RegionId = new SelectList(context.Regions.OrderBy(x => x.Name), "Id", "Name", user.RegionId);
-
             if (user != null)
             {
                 user.FullName = model.FullName;
@@ -284,7 +282,7 @@ namespace FileLoader.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UserList", "Account");
                 }
                 AddErrors(result);
             }

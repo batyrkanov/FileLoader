@@ -29,11 +29,14 @@ function zipAllFiles() {
             "response": response
         },
         cache: false,
-        success: function (result) {
-            
+        success: function (result) { 
             $('#myModal').modal('show');
             $('#exampleModalLabel').text('Выполнено');
             $('#MessageError').text('Файлы успешно сформированы!');
+
+            setTimeout(function () {          
+                location.reload();
+            }, 2000);           
         },
         error: function (XMLHttpRequest) {
             console.log(XMLHttpRequest);
