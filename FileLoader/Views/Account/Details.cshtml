@@ -1,34 +1,40 @@
 ﻿@model FileLoader.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Подробная информация";
 }
-
-<h2>Details</h2>
+<br />
+<h2>Подробная информация</h2>
 
 <div>
-    <h4>ApplicationUser</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Area.Name)
+            Область
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Area.Name)
+            @ViewBag.Region
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Region.Name)
+            Район
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Region.Name)
+            @ViewBag.Area
         </dd>
 
-        
         <dt>
-            @Html.DisplayNameFor(model => model.UserName)
+            ФИО
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+
+        <dt>
+            Логин пользователя
         </dt>
 
         <dd>
@@ -37,7 +43,9 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="form-group">
+    <div class="btn-group" role="group">
+        <a href="@Url.Action("Edit", "Account", new { id = Model.Id})" class="btn btn-success"><i class="fa fa-pencil" aria-hidden="true" title="Редактировать" data-toggle="tooltip" data-placement="top"><span style="padding: 5px;">Редактировать</span></i></a>
+        <a href="@Url.Action("UserList", "Account")" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true" title="Назад" data-toggle="tooltip" data-placement="top"><span style="padding: 5px;">Назад</span></i></a>
+    </div>
+</div>

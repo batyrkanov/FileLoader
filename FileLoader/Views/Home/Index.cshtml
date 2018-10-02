@@ -1,12 +1,13 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Главная";
 }
 
 <div class="jumb jumbotron jumbotron-fluid">
     <div class="container">
-        <h3>Инструкция</h3>
+        <h3>Инструкция по загрузке базы данных ПХК АЙЫЛ</h3>
+        <br />
         <p class="lead">
-            <b>Для загрузки базы выберите файлы в форматах .rar, .zip, .doc, .xls и нажмите "Загрузить".</b>
+            <b>Для загрузки базы выберите файлы в форматах <strong>.rar, .zip, .doc, .docx, .xls, .xlsx, .arj</strong> и нажмите <strong>"Загрузить"</strong>.</b>
         </p>
     </div>
 </div>
@@ -15,11 +16,19 @@
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
-    <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" class="btn btn-default" />
-    <input type="submit" value="Загрузить" class="btn btn-default" />
+    <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block; box-sizing:content-box;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
+    <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" style="margin-left: 10%" class="btn btn-danger" />
+    <input type="submit" value="Загрузить" id="btn-download" class="btn btn-success" />
 }
-@if (ViewBag.SizeOverflow == true)
+@if (ViewBag.NoFile == true)
+{
+    @section Scripts {
+        <script type="text/javascript" charset="utf-8">
+            NoFile();
+        </script>
+    }
+}
+else if (ViewBag.SizeOverflow == true)
 {
     @section Scripts {
         <script type="text/javascript" charset="utf-8">
@@ -44,7 +53,7 @@ else if (ViewBag.CorrectExtension == true)
         </script>
     }
 }
-<!-- Modal window for image size 2MB-->
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -61,4 +70,3 @@ else if (ViewBag.CorrectExtension == true)
     </div>
 </div>
 @Scripts.Render("~/Scripts/app.js")
-

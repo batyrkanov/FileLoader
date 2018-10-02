@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -6,8 +7,9 @@
     @Html.AntiForgeryToken()
 
     <ul class="navbar-nav my-2 my-lg-0">
+        <li><a class="nav-link" href="#">Здравствуйте, @User.Identity.Name!</a></li>
         <li>
-            @Html.ActionLink("Сменить пароль", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+            @Html.ActionLink("Сменить пароль", "ChangePassword", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
         </li>
         <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Выйти</a></li>
     </ul>

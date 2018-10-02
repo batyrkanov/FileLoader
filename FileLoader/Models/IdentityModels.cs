@@ -10,6 +10,7 @@ namespace FileLoader.Models
     // В профиль пользователя можно добавить дополнительные данные, если указать больше свойств для класса ApplicationUser. Подробности см. на странице https://go.microsoft.com/fwlink/?LinkID=317594.
     public class ApplicationUser : IdentityUser
     {
+        public string FullName { get; set; }
         public Guid? RegionId { get; set; }
         public Guid? AreaId { get; set; }
         public Region Region { get; set; }
@@ -37,6 +38,5 @@ namespace FileLoader.Models
         {
             return new ApplicationDbContext();
         }
-        
     }
 }

@@ -1,7 +1,251 @@
 ﻿@{
-    ViewBag.Title = "About";
+    ViewBag.Title = "Главная";
+    Layout = null;
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<p>Use this area to provide additional information.</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
+    <title>Главная</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script>
+        window.console = window.console || function (t) { };
+    </script>
+    @if (!User.IsInRole("admin"))
+    {
+        <style>
+            .strips__strip {
+                will-change: width, left, z-index, height;
+                position: absolute;
+                width: 50%;
+                min-height: 100vh;
+                overflow: hidden;
+                cursor: pointer;
+                transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+            .strips__strip:nth-child(2) {
+                left: 50vw;
+            }
+        </style>
+    }
+
+
+    <script>
+        if (document.location.search.match(/type=embed/gi)) {
+            window.parent.postMessage("resize", "*");
+        }
+    </script>
+
+
+</head>
+
+<body translate="no">
+
+    <section class="strips">
+        <!--Instructions-->
+        <article class="strips__strip">
+            <div class="strip__content">
+                <h1 class="strip__title" data-name="Lorem">Инструкция</h1>
+                <div class="strip__inner-text">
+                    <h2>Инструкция по загрузке базы данных ПХК АЙЫЛ</h2>
+                    <p>Для загрузки базы выберите файлы в форматах <strong>.rar, .zip, .doc, .docx, .xls, .xlsx, .arj</strong> и нажмите <strong>"Загрузить"</strong>.</p>
+                </div>
+            </div>
+        </article>
+
+        <!--Upload-->
+        <article class="strips__strip">
+            <div class="strip__content">
+                <h1 class="strip__title" data-name="Ipsum">Загрузка</h1>
+                <div class="strip__inner-text">
+                    <h2>Загрузка</h2>
+                    @using (Html.BeginForm("About", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
+                        <div class="btn-group">
+                            <button class="btn btn-danger" id="fileBrowes" onclick="ClearPreview()">
+                                <i class="fa fa-trash"></i> Сброс
+                            </button>
+                            <button type="submit" id="btn-download" class="btn btn-success">
+                                <i class="fa fa-cloud-upload"></i> Загрузить
+                            </button>
+                        </div>
+                    }
+                    @if (ViewBag.SizeOverflow == true)
+                    {
+                        @section Scripts {
+                            <script type="text/javascript" charset="utf-8">
+                                SizeOverflow();
+                            </script>
+                        }
+                    }
+                    else if (ViewBag.UploadSuccess == true)
+                    {
+                        @section Scripts {
+                            <script type="text/javascript" charset="utf-8">
+                                UploadSuccess();
+                            </script>
+                        }
+                    }
+
+                    else if (ViewBag.CorrectExtension == true)
+                    {
+                        @section Scripts {
+                            <script type="text/javascript" charset="utf-8">
+                                CorrectExtension();
+                            </script>
+                        }
+                    }
+
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Ошибка</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <span id="MessageError"></span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        @if (User.IsInRole("admin"))
+        {
+            <!--Users-->
+            <article class="strips__strip">
+                <div class="strip__content">
+                    <h1 class="strip__title" data-name="Dolor">Юзеры</h1>
+                    <div class="strip__inner-text">
+                        <h2>Пользователи</h2>
+                        <p>Страница со всем списком пользователей, с возможностью их добавления, удаления и редактирования. Чтобы перейти нажмите на кнопку.</p>
+                        <p>
+                            <a href="@Url.Action("UserList", "Account")" class="btn btn-info">
+                                <i class="fa fa-users" aria-hidden="true" title="Пользователи" data-toggle="tooltip" data-placement="top">
+                                    <span style="padding: 5px;">Пользователи</span>
+                                </i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!--Regions-->
+            <article class="strips__strip">
+                <div class="strip__content">
+                    <h1 class="strip__title" data-name="Sit">Области</h1>
+                    <div class="strip__inner-text">
+                        <h2>Области</h2>
+                        <p>Страница со всем списком областей, с возможностью их добавления, удаления и редактирования. Чтобы перейти нажмите на кнопку.</p>
+                        <p>
+                            <a href="@Url.Action("Index", "Regions")" class="btn btn-info">
+                                <i class="fa fa-bar-chart" aria-hidden="true" title="Области" data-toggle="tooltip" data-placement="top">
+                                    <span style="padding: 5px;">Области</span>
+                                </i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!--Areas-->
+            <article class="strips__strip">
+                <div class="strip__content">
+                    <h1 class="strip__title" data-name="Amet">Районы</h1>
+                    <div class="strip__inner-text">
+                        <h2>Районы</h2>
+                        <p>Страница со всем списком районов, с возможностью их добавления, удаления и редактирования. Чтобы перейти нажмите на кнопку.</p>
+                        <p>
+                            <a href="@Url.Action("Index", "Areas")" class="btn btn-info">
+                                <i class="fa fa-bar-chart" aria-hidden="true" title="Районы" data-toggle="tooltip" data-placement="top">
+                                    <span style="padding: 5px;">Районы</span>
+                                </i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </article>
+        }
+
+        <i class="fa fa-close strip__close"></i>
+    </section>
+    <script src="//static.codepen.io/assets/common/stopExecutionOnTimeout-41c52890748cd7143004e05d3c5f786c66b19939c4500ce446314d1748483e13.js"></script>
+
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+    <script>
+        var Expand = function () {
+            var tile = $('.strips__strip');
+            var tileLink = $('.strips__strip > .strip__content');
+            var tileText = tileLink.find('.strip__inner-text');
+            var stripClose = $('.strip__close');
+
+            var expanded = false;
+
+            var open = function open() {
+
+                var tile = $(this).parent();
+
+                if (!expanded) {
+                    tile.addClass('strips__strip--expanded');
+                    // add delay to inner text
+                    tileText.css('transition', 'all .5s .3s cubic-bezier(0.23, 1, 0.32, 1)');
+                    stripClose.addClass('strip__close--show');
+                    stripClose.css('transition', 'all .6s 1s cubic-bezier(0.23, 1, 0.32, 1)');
+                    expanded = true;
+                }
+            };
+
+            var close = function close() {
+                if (expanded) {
+                    tile.removeClass('strips__strip--expanded');
+                    // remove delay from inner text
+                    tileText.css('transition', 'all 0.15s 0 cubic-bezier(0.23, 1, 0.32, 1)');
+                    stripClose.removeClass('strip__close--show');
+                    stripClose.css('transition', 'all 0.2s 0s cubic-bezier(0.23, 1, 0.32, 1)');
+                    expanded = false;
+                }
+            };
+
+            var bindActions = function bindActions() {
+                tileLink.on('click', open);
+                stripClose.on('click', close);
+            };
+
+            var init = function init() {
+                bindActions();
+            };
+
+            return {
+                init: init
+            };
+
+
+        }();
+
+        Expand.init();
+          //# sourceURL=pen.js
+    </script>
+</body>
+
+</html>
