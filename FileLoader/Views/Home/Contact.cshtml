@@ -2,10 +2,9 @@
     ViewBag.Title = "Contact";
 }
 
-<br />
-<a download href="@Url.Content("~/Extract/base.zip")" type="button" class="btn btn-info">Скачать базы</a>
-<button class="btn btn-danger" onclick="deleteAllFiles()">Удалить с сервера базы</button>
-
+<br/>
+<button class="btn btn-info" onclick="zipAllFiles()">Сформировать ZIP документ с базами</button>
+<a download href="@Url.Content("~/Extract/base.zip")" type="button" id="submitBtn" class="btn btn-success">Скачать базы</a>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
