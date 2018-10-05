@@ -136,9 +136,12 @@ namespace FileLoader.Controllers
         {
             System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(Server.MapPath("~/files/"));
             int count = dir.GetFiles().Length;
-            //JsonResponse jr = new JsonResponse();
-            //jr.SetSuccess(true).SetResult(count);
-            return Json(new { result = count }, JsonRequestBehavior.AllowGet);
+            List<string> name = Directory.GetFiles(dir.ToString()).Select(f=>Path.GetFileName(f)).ToList();
+            List<object> objects = new List<object>();
+            objects.Add(new { result = count });
+            objects.Add(new { names = name });
+
+            return Json(objects, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
