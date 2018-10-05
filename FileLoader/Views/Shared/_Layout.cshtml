@@ -40,8 +40,8 @@
                             </a>
                         </li>
                         @*<li class="nav-item">
-                             @Html.ActionLink("Прогрессивный дизайн", "About", "Home", null, new { @class = "nav-link" })
-                         </li>*@
+                                @Html.ActionLink("Прогрессивный дизайн", "About", "Home", null, new { @class = "nav-link" })
+                            </li>*@
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -64,7 +64,7 @@
         </footer>
     </div>
 
-
+    @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
 
@@ -74,25 +74,7 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
-<script>
-    $(function () {
-        $(document).ready(function () {
-            $.ajax({
-                type: "GET",
-                url: "/Home/CountFiles",
-                data: '{}',
-                contextType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    $("#txtName").text(response.result)
-                },
-                failure: function (response) {
-                    alert(response);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        });
-    });
+
+<script type="text/javascript">
+    takeInfoFromDirectory();
 </script>

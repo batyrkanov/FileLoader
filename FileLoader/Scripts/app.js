@@ -1,4 +1,36 @@
-﻿function ClearPreview() {
+﻿function takeInfoFromDirectory() {
+    $(function () {
+        $(document).ready(function () {
+            var booksDiv = $("#booksDiv");
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Home/CountFiles",
+                data: '{}',
+                contextType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#txtName").text(data[0].result)
+                   
+                    var result = "";
+                    booksDiv.html('');
+                    $.each(data[1].names, function (index, value) {                              
+                        result +=  value + '<br/>'
+                    });
+                    booksDiv.html(result);
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+    });
+}
+
+function ClearPreview() {
     $("#fileBrowes").val('');
 }
 function CorrectExtension() {
