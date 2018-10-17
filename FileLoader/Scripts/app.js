@@ -1,4 +1,5 @@
-﻿function takeInfoFromDirectory() {
+﻿//Take Count and Names files from server folder and show on WebPage
+function takeInfoFromDirectory() {
     $(function () {
         $(document).ready(function () {
             var booksDiv = $("#booksDiv");
@@ -11,11 +12,11 @@
                 dataType: "json",
                 success: function (data) {
                     $("#txtName").text(data[0].result)
-                   
+
                     var result = "";
                     booksDiv.html('');
-                    $.each(data[1].names, function (index, value) {                              
-                        result +=  value + '<br/>'
+                    $.each(data[1].names, function (index, value) {
+                        result += value + '<br/>'
                     });
                     booksDiv.html(result);
                 },
@@ -33,6 +34,8 @@
 function ClearPreview() {
     $("#fileBrowes").val('');
 }
+
+//Show Modal Messages if ViewBag in HomeController/About equal true
 function CorrectExtension() {
     $('#myModal').modal('show');
     $('#MessageError').text('Необходимо выбрать файл только с расширением *.zip, *.rar, *.doc, *.docx, *.xls, *.xlsx, *.arj');
@@ -46,14 +49,33 @@ function NoFile() {
     $('#MessageError').text('Необходимо выбрать загружаемые файлы!');
 }
 function UploadSuccess() {
-    $('#myModal').modal('show');
+    $('#myModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#processingModal').modal('hide');
     $('#exampleModalLabel').text('Выполнено');
     $('#MessageError').text('Файлы успешно загружены!');
 }
 
-function zipAllFiles() {
+function LoadFiles() {
+    $('#processingModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+}
+function reloadWindowLoadFiles() {
+    window.location.replace("/Home/Index");
+}
+
+function ZipAllFiles() {
+    $('#processingModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
     var response = true;
-    
+
     $.ajax({
         url: "/Home/Contact",
         type: "POST",
@@ -61,18 +83,23 @@ function zipAllFiles() {
             "response": response
         },
         cache: false,
-        success: function (result) { 
-            $('#myModal').modal('show');
+        success: function (result) {
+            $('#processingModal').modal('hide');
+            $('#resultModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
             $('#exampleModalLabel').text('Выполнено');
-            $('#MessageError').text('Файлы успешно сформированы!');
-
-            setTimeout(function () {          
-                location.reload();
-            }, 2000);           
+            $('#Message').text('Файлы успешно сформированы!');
         },
         error: function (XMLHttpRequest) {
+            $('#processingModal').modal('hide');
             console.log(XMLHttpRequest);
         }
     });
+
     return false;
+}
+function reloadWindowZipFiles() {
+    location.reload();
 }

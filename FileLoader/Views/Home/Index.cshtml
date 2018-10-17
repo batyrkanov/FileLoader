@@ -18,7 +18,7 @@
 {
     <input multiple type="file" name="files" id="fileBrowes" class="btn btn-default" style="display:inline-block; box-sizing:content-box;" accept=".rar,application/zip,.doc,.docx,.xls,.xlsx,.arj" />
     <input type="button" value="Сброс" id="fileBrowes" onclick="ClearPreview()" style="margin-left: 10%" class="btn btn-danger" />
-    <input type="submit" value="Загрузить" id="btn-download" class="btn btn-success" />
+    <input type="submit" value="Загрузить" id="btn-download" onclick="LoadFiles()" class="btn btn-success" />
 }
 @if (ViewBag.NoFile == true)
 {
@@ -54,6 +54,16 @@ else if (ViewBag.CorrectExtension == true)
     }
 }
 
+<div class="modal fade" id="processingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <span>Выполняется загрузка баз...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -64,7 +74,7 @@ else if (ViewBag.CorrectExtension == true)
                 <span id="MessageError"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-secondary" onclick="reloadWindowLoadFiles()" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
