@@ -10,7 +10,7 @@ using FileLoader.Models;
 using X.PagedList;
 
 namespace FileLoader.Controllers
-{
+{ 
     [Authorize(Roles = "admin")]
     public class RegionsController : Controller
     {

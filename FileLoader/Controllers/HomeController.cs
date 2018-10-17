@@ -16,6 +16,7 @@ using System.Numerics;
 
 namespace FileLoader.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
